@@ -6,14 +6,13 @@
         public $id;
         public $name;
         public $products;
-        public $restaurantTables;
 
         public function __construct($dbConn)
         {
             $this->conn = $dbConn;
         }
 
-        public function read($restaurantID)
+        public function findById($restaurantID)
         {
             $query = 'SELECT 
             r.id,

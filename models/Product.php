@@ -1,0 +1,44 @@
+<?php
+    class Product{
+        private $conn;
+        private $table = 'product';
+
+        public $ID;
+        public $restaurantID;
+        public $title;
+        public $price;
+        public $description;
+        public $cantity;
+        public $disponibility;
+
+        public function __construct($dbConn)
+        {
+            $this->conn = $dbConn;
+        }
+
+        public function findAllProductsByRestaurantId($restaurantID)
+        {
+            $query = 'SELECT 
+            p.ID,
+            p.restaurantID,
+            p.title,
+            p.price,
+            p.description,
+            p.cantity,
+            p.disponibility
+            FROM
+            ' . $this->table . ' p
+            WHERE p.restaurantID = ' . $restaurantID;
+            
+            //prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //execute query
+            $stmt->execute();
+
+            return $stmt;
+        }
+
+
+    }
+?>

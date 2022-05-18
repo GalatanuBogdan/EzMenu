@@ -32,3 +32,5 @@ CREATE TABLE allergens(
     name VARCHAR(64),
 	FOREIGN KEY (productID) REFERENCES product(ID)
 );
+
+-- INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES ('1', '1', 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
