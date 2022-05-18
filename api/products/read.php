@@ -48,7 +48,8 @@
           'ID' => $ID,
           'restaurantID' => $restaurantID,
           'title' => $title,
-          'price' => $description,
+          'price' => $price,
+          'description' => $description,
           'cantity' => $cantity,
           'disponibility' => $disponibility
         );

@@ -7,13 +7,27 @@
     <title>EzMenu</title>
 </head>
 <body>
-    <button action = "http://localhost/EzMenu/api/restaurant/read.php" type="Get" method="GET">Get a restaurant</button>
-    <?php
-    include('.\config\Database.php');
-    // Check connection
-    $dbManager = new Database();
-    $conn = $dbManager->connect();
-    ?>
+
+<?php
+        $getRestaurantApiRequest = file_get_contents('http://localhost/EzMenu/api/restaurants/read.php');
+        $resraurantResult = json_decode($getRestaurantApiRequest, true);
+        echo "<div>" . $resraurantResult['name'] . "</div>";
+
+        $products = $resraurantResult['products'];
+
+        for($i=0;$i<count($products);$i++)
+        {
+            echo "<div style=\"border-radius:10px;width: 300px; background-color:grey;\">";
+            echo "<p>" . $products[$i]['title']. "</p>";
+            echo "<p>" . $products[$i]['description']. "</p>";
+            echo "<p>" . $products[$i]['price']. " lei</p>";
+            echo "<p>" . $products[$i]['cantity']. " grame</p>";
+            echo "</div>";
+        }
+
+?>
+
+
 </body>
 
 </html>
