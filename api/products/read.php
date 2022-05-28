@@ -46,6 +46,8 @@
           'restaurantID' => $restaurantID,
           'title' => $title,
           'price' => $price,
+          'imageURL' => $imageURL,
+          'previewDescription' => $description,
           'description' => $description,
           'cantity' => $cantity,
           'disponibility' => $disponibility

@@ -9,7 +9,7 @@
 <body>
 
 <?php
-        $loadProducts = $_GET['loadProducts'] ?? true;
+        $loadProducts = $_GET['loadProducts'] ?? 1;
         $restaurantName=$_GET['restaurantName'] ?? null;
 
         if($restaurantName)

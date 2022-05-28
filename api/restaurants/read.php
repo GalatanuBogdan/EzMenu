@@ -13,36 +13,52 @@ $restaurant = new Restaurant($db);
 
 //$param=$_GET['param'] ?? null; // take param, else if param is missing $param = 1
 //take params
-$loadProducts = $_GET['loadProducts'] ?? true;
+$loadProducts = $_GET['loadProducts'] ?? 1;
+$loadCategories = $_GET['loadCategories'] ?? 1;
 $restaurantName=$_GET['restaurantName'] ?? null;
+$restaurantID=$_GET['restaurantID'] ?? null;
 
 $restaurant_items = array();
 
-if($restaurantName){
-    $result = $restaurant->findByName($restaurantName);
-
-    if ($result->rowCount() > 0)
+if($restaurantName)
+{
+    //if we request an restaurant by name, we need its id from the database
+    $result = $restaurant->findIdByName($restaurantName);
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    if($row)
     {
-        $row = $result->fetch(PDO::FETCH_ASSOC);
-
         extract($row);
+        $restaurantID = $id;
+    }
+}
 
-        $restaurant_items = array(
-            'ID' => $id,
-            'name' => $name,
-            'products' => array()
-        );
+$result = null;
+if($restaurantID)
+    $result = $restaurant->findById($restaurantID);
+if ($result != null && $result->rowCount() > 0)
+{
+    $row = $result->fetch(PDO::FETCH_ASSOC);
+    extract($row);
 
-        if ($loadProducts)
-        {
-            $result = $restaurant->findIdByName($restaurantName);
-            $row = $result->fetch(PDO::FETCH_ASSOC);
-            extract($row);
-            $restaurantID = $id;
-            $productsApiRequest = file_get_contents("http://localhost/EzMenu/api/products/read.php?restaurantID=$restaurantID");
-            $products = json_decode($productsApiRequest, true);
-            $restaurant_items['products'] = $products;
-        }
+    $restaurant_items = array(
+        'ID' => $id,
+        'name' => $name,
+        'products' => array(),
+        'categories' => array()
+    );
+
+    if ($loadProducts)
+    {
+        $productsApiRequest = file_get_contents("http://localhost/EzMenu/api/products/read.php?restaurantID=$restaurantID");
+        $products = json_decode($productsApiRequest, true);
+        $restaurant_items['products'] = $products;
+    }
+
+    if($loadCategories)
+    {
+        $categoriesApiRequest = file_get_contents("http://localhost/EzMenu/api/categories/read.php?restaurantID=$restaurantID");
+        $categories = json_decode($categoriesApiRequest, true);
+        $restaurant_items['categories'] = $categories;
     }
 }
 

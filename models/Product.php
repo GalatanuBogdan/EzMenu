@@ -7,6 +7,8 @@
         public $restaurantID;
         public $title;
         public $price;
+        public $imageURL;
+        public $previewDescription;
         public $description;
         public $cantity;
         public $disponibility;
@@ -23,6 +25,8 @@
             p.restaurantID,
             p.title,
             p.price,
+            p.imageURL,
+            p.previewDescription,
             p.description,
             p.cantity,
             p.disponibility

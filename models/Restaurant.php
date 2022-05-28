@@ -25,9 +25,22 @@
             return $stmt;
         }
 
+        public function findById($restaurantID)
+        {
+            $query ="SELECT r.id, r.name FROM $this->table r WHERE r.id = '$restaurantID'";
+
+            //prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            //execute query
+            $stmt->execute();
+
+            return $stmt;
+        }
+
         public function findIdByName($restaurantName)
         {
-            $query = "SELECT r.ID FROM $this->table r WHERE r.name = '$restaurantName' ";
+            $query = "SELECT r.id FROM $this->table r WHERE r.name = '$restaurantName' ";
 
             $stmt = $this->conn->prepare($query);
             $stmt->execute();

@@ -1,17 +1,41 @@
 <?php
-    include_once 'repository.php';
     include_once '../../config/Database.php';
+    include_once '../../models/Category.php';
+
+    $restaurantID=$_GET['restaurantID'] ?? null;
+
     function getCategories($restaurantID){
+
+        if($restaurantID == null)
+            return array();
+
         $database = new Database();
         $conn = $database->connect();
 
-        $categoryRepository = new CategoryRepository($conn);
-        $categoryArray = $categoryRepository->getAllCategories($restaurantID);
-        foreach ($categoryArray as $category) {
-           echo $category->getName() . "<br>";
+        $categoryDAO = new Category($conn);
+        $result = $categoryDAO->getAllCategories($restaurantID);
+
+        $categories = array();
+
+        if ($result != null && $result->rowCount() > 0)
+        {
+            while($row = $result->fetch(PDO::FETCH_ASSOC))
+            {
+                extract($row);
+
+                $category = array(
+                    'ID' => $id,
+                    'productID' => $productID,
+                    'name' => $name
+                );
+
+                array_push($categories, $category);
+            }
         }
+
+        return $categories;
     }
 
-    getCategories(1);
+    echo json_encode(getCategories($restaurantID));
 
 ?>

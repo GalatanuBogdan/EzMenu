@@ -13,42 +13,43 @@
 
 </head>
 
-<!-- <?php
-        $getRestaurantApiRequest = file_get_contents('http://localhost/EzMenu/api/restaurants/read.php');
-        $resraurantResult = json_decode($getRestaurantApiRequest, true);
-        echo"<div class=\"menu-top-bar\">" .
-        
-        "<div class=\"menu-top-bar-restaurant-title\">" . $resraurantResult['name'] . "</div>" . 
-        "<div class=\"menu-top-bar-restaurant-table-number\"> staying on the table #20 </div>" . 
-        "</div>";
+<?php
+    //init all variables that uses dynamic data from DB
+    $restaurantID = 1; //when generating the QRCode, this should be set
+    $tableNumber = 1;  //when generating the QRCode, this should be set
 
-        $products = $resraurantResult['products'];
+    $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantID=$restaurantID");
+    $restaurant = json_decode($getRestaurantApiRequest, true);
+    $products = array();
+    $categories = array();
+    if($restaurant != null)
+    {
+        $products = $restaurant['products'];
+        $categories = $restaurant['categories'];
+    }
+    else
+    {
+        echo "No restaurant found with restaurantId=$restaurantID";
+        //to do: add an exception
+    }
 
-        for($i=0;$i<count($products);$i++)
-        {
-            echo "<div style=\"border-radius:10px;width: 300px; background-color:grey;\">";
-            echo "<p>" . $products[$i]['title']. "</p>";
-            echo "<p>" . $products[$i]['description']. "</p>";
-            echo "<p>" . $products[$i]['price']. " lei</p>";
-            echo "<p>" . $products[$i]['cantity']. " grame</p>";
-            echo "</div>";
-        }
+    
+?>
 
-?> -->
 
 <body>
-
+    
     <div style="border-radius:0.8rem !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);" ; class="container bg-white shadow-lg">
         <div class="row">
             <div class="col-md-8 align-self-center">
                 <div class="row">
                     <div class="col-md-8 bg-white">
-                        <h2 style="text-align:center; font-weight: bold;">Mama mia!</h2>
+                        <?php echo '<h2 style="text-align:center; font-weight: bold;">' . $restaurant['name'] .'!</h2>' ; ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12 bg-white">
-                        <h3 style="text-align:center; font-weight: bold;">Table #23</h3>
+                        <?php echo '<h3 style="text-align:center; font-weight: bold;"> Table #' . $tableNumber .'</h3>'; ?>
                     </div>
                 </div>
 
@@ -70,10 +71,10 @@
         </div>
     </div>
 
-    <div class="container" style="margin-top:100px" ;>
+    <div class="container-fluid" style="margin-top:100px" ;>
         <div class="row">
             <!-- categories -->
-            <div class="col-md-2 mb-5">
+            <div class="col-md-2 pl-4">
                 <div class="row">
                     <img class="p-0 m-0 ml-2" src="img\categoriesImg.png" alt="">
                     <h4 class="p-0 m-2 categories-title">Categories</h4>
@@ -82,91 +83,112 @@
                 <br>
                 <br>
                 <div class="ml-3">
-                    <div class="row">
-                        <h5 style="font-weight:bold">BestSellers</h5>
-                    </div>
 
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+                    <?php
+                        if($categories)        
+                            $currentSelected = $categories[0];
+                        else
+                            $currentSelected = null;
 
-                    <div class="row">
-                        <h5>News</h5>
-                    </div>
+                        for($i=0;$i<count($categories); $i++)
+                        {
+                            if($categories[$i] == $currentSelected)
+                            {
+                                echo '
+                                    <div class="row">
+                                        <h5 style="font-weight:bold">' . $categories[$i]['name'] . '</h5>
+                                    </div>
+                                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+                                    ';
+                            }
+                            else
+                            {
+                                echo '
+                                    <div class="row">
+                                        <h5>' . $categories[$i]['name'] . '</h5>
+                                    </div>
+                                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+                                ';
+                            }
+                          
+                        }
 
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>Soups</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>News</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>Soups</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>News</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>Soups</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>News</h5>
-                    </div>
-
-                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-
-                    <div class="row">
-                        <h5>Soups</h5>
-                    </div>
+                    ?>
                 </div>
             </div>
 
             <div class="col-md-10">
                 <!-- searchBar -->
-                <div class="form d-flex">
+                <div class="form d-flex col-md-9">
                     <i class="fa fa-search"></i>
                     <input type="text" class="form-control form-input" placeholder="Search in Mama Mia...">
-                    <span class="left-pan"><i class="fa fa-microphone"></i></span>
+                    <span class="left-pan"><i class="fa fa-filter"></i></span>
                 </div>
 
                 <!-- Selected category + allergensBar -->
                 <br>
                 <div class="row">
                     <!-- Selected category -->
-                    <div class="col-md-2">
-                        <h3 style="font-weight:bold">BestSellers:</h3>
-                    </div>
-                    <div class="col-md-8">
+                    <?php
+                        if($currentSelected != null)
+                        {
+                            echo '
+                                <div class="col-md-4">
+                                    <h3 style="font-weight:bold">' . $currentSelected['name'] . ':</h3>
+                                </div>
+                            ';
+                        }
+                        else
+                        {
+                           //something wrong to categories, but add the col-md-2 class for better spacing
+                            echo '
+                            <div class="col-md-4">
+                                <h3 style="font-weight:bold"></h3>
+                            </div>
+                            ';
+                        }
+                    ?>
+                    <div class="col-md-7">
                         <div class="row">
-                            <p class="col-md-4 align-self-center"></p>
                             <label  class="col-md-8 p-0 m-0 d-flex" for="whatev2" style="border-radius:0.8rem !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);">
-                                <button class="p-2 m-2 btn btn-primary bg-danger" style="border-radius:15px; border-color:#FDFDFD">Milk<span style="font-weight:bold"> -</span></button>                                            
-                                <button class="p-2 m-2 btn btn-primary bg-danger" style="border-radius:15px; border-color:#FDFDFD">Eggs<span style="font-weight:bold"> -</span></button>                                            
-                                <button class="p-2 ml-3 ml-auto btn btn-primary" style="border-radius: 0px 10px 10px 0px; background-color:#F9B356; border-color:#F9B356">Add Allergens<span style="font-weight:bold;"> +</span></button>                                            
+                                <button class="m-2 btn btn-primary bg-danger" style="border-radius:15px; border-color:#FDFDFD">Milk<span style="font-weight:bold"> -</span></button>                                            
+                                <button class="m-2 btn btn-primary bg-danger" style="border-radius:15px; border-color:#FDFDFD">Eggs<span style="font-weight:bold"> -</span></button>                                            
+                                <button class="ml-auto btn btn-primary" style="border-radius: 0px 10px 10px 0px; background-color:#F9B356; border-color:#F9B356">Add Allergens<span style="font-weight:bold;"> +</span></button>                                            
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <div class= "row">
+                <div class= "d-flex row mt-5">
+                    <?php
+                        for($i=0;$i<count($products);$i++)
+                        {
+                            echo 
+                            '<div class="col-md-4 m-4 mt-5 p-0 menu-product">
+                                <img class="col-4 m-0 p-0 product-img" src="img\productDummyImg.png" alt="">
+                                <div class="d-flex flex-column col-md-8 m-0 p-0 justify-content-around">
+                                    <div class="row m-2 text-left product-text font-weight-bold">
+                                        '. $products[$i]['title'] .'
+                                    </div>
+                                    <div class="d-flex row m-2 small text-left product-text">
+                                        '. $products[$i]['previewDescription'] .'
+                                    </div>
+                                    <div class="d-flex row m-2 small text-left product-text">
+                                        '. $products[$i]['cantity'] .'
+                                    </div>
+                                    <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
+                                        '. $products[$i]['price'] .'
+                                    </div>
+                                    <div class="row d-flex p-0 pr-3 pb-2 m-0 font-weight-bold justify-content-end">
+                                        <button class="d-inline-flex m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold product-img justify-content-center" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
+                                    </div>
+                                </div>    
+                            </div>
+                            ';
+                        }
+                    ?>
 
-
-                    <div class="col-md-5 mr-3 menu-product">
+                    <!-- <div class="col-md-5 mr-3 menu-product">
                         <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
                         <div class="col-md-8">
                             <div class="row m-2 text-left product-text font-weight-bold">
@@ -180,119 +202,7 @@
                                 <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
                             </div>
                         </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
-
-                    <div class="col-md-5 mr-3 menu-product">
-                        <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
-                        <div class="col-md-8">
-                            <div class="row m-2 text-left product-text font-weight-bold">
-                                Crispy Menu
-                            </div>
-                            <div class="row m-2 small text-left product-text">
-                                French fries, garlic mayonnaise, lightly spicy chicken breast, coleslaw salad - 550g
-                            </div>
-                            <div class="row d-flex justify-content-between m-2 text-left font-weight-bold product-text">
-                                <p class="m-0 p-0">31.90 RON</p>
-                                <button class="d-inline-flex justify-content-center m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold" style="border-radius:15px; border-color:#FDFDFD;background-color:#F9B356">Add</button>                                            
-                            </div>
-                        </div>    
-                    </div>
+                    </div> -->
                 </div>
             </div>
 

@@ -2,25 +2,23 @@
     class Category{
         private $productId;
         private $name;
+        private $conn;
+        private $table = 'categories';
 
-        public function __construct($name){
-            $this->name = $name;
+        public function __construct($dbConn)
+        {
+            $this->conn = $dbConn;
         }
 
-        public function getName(){
-            return $this->name;
-        }
+        /*returns all the categories from the database*/
+        public function getAllCategories($restaurantId){
+            $query = 'SELECT DISTINCT c.id, c.productID, c.name FROM ' . $this->table . ' c JOIN product p on 
+                         p.id = c.productID JOIN restaurant r ON p.restaurantID = r.id
+                         WHERE r.id = ' . $restaurantId;
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
 
-        public function getProductId(){
-            return $this->productId;
-        }
-
-        public function setName($name){
-            $this->name = $name;
-        }
-
-        public function setId($id){
-            $this->id = $id;
+            return $stmt;
         }
 
     }
