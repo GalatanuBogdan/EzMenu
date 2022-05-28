@@ -26,25 +26,17 @@ CREATE TABLE categories(
 	FOREIGN KEY (productID) REFERENCES product(ID)
 );
 
-CREATE TABLE allergens(
-	ID int PRIMARY KEY AUTO_INCREMENT,
-	productID int,
-    name VARCHAR(64),
-	FOREIGN KEY (productID) REFERENCES product(ID)
+create table allergens(
+    id integer primary key auto_increment,
+    name varchar(50)
 );
- 	
-INSERT INTO `restaurant` (`ID`, `name`) VALUES (NULL, 'Mamma Mia');
 
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+create table product_allergens(
+    id integer primary key auto_increment,
+    product_id integer,
+    allergen_id integer,
+    foreign key (product_id) references product(id) on delete cascade,
+    foreign key (allergen_id) references allergens(id) on delete cascade
+);
 
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
-
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
-
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
-
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
-
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
-
-INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+-- INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES ('1', '1', 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
