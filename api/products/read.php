@@ -47,7 +47,7 @@
           'title' => $title,
           'price' => $price,
           'imageURL' => $imageURL,
-          'previewDescription' => $description,
+          'previewDescription' => $previewDescription,
           'description' => $description,
           'cantity' => $cantity,
           'disponibility' => $disponibility

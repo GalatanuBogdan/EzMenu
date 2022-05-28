@@ -17,7 +17,7 @@
             $restaurantName = urlencode($restaurantName);
             $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantName=$restaurantName&loadProducts=$loadProducts");
             $restaurant = json_decode($getRestaurantApiRequest, true);
-            if(count($restaurant))
+            if($restaurant && count($restaurant))
             {
                 echo "<div>" . $restaurant['name'] . "</div>";
             
