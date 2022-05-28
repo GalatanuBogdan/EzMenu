@@ -9,16 +9,17 @@
         }
 
         /*returns all the categories from the database*/
-        public function getAllCategories(){
-            $query = 'SELECT c.productID, c.name FROM ' . $this->table . ' c ';
+        public function getAllCategories($restaurantId){
+            $query = 'SELECT DISTINCT a.name FROM ' . $this->table . ' a join product p on 
+                         p.id = a.productID join restaurant r on p.restaurantID = r.id
+                         WHERE r.id = ' . $restaurantId;
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             $categories = array();
-            while($productRow = $stmt->fetch(PDO::FETCH_ASSOC))
+            while($categoryRow = $stmt->fetch(PDO::FETCH_ASSOC))
             {
-                $id = $productRow['productID'];
-                $name = $productRow['name'];
-                $category = new Category($id, $name);
+                $name = $categoryRow['name'];
+                $category = new Category($name);
                 array_push($categories, $category);
             }
             return $categories;
