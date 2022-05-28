@@ -32,5 +32,19 @@ CREATE TABLE allergens(
     name VARCHAR(64),
 	FOREIGN KEY (productID) REFERENCES product(ID)
 );
+ 	
+INSERT INTO `restaurant` (`ID`, `name`) VALUES (NULL, 'Mamma Mia');
 
--- INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES ('1', '1', 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 
+
+INSERT INTO `product` (`ID`, `restaurantID`, `title`, `price`, `description`, `cantity`, `disponibility`) VALUES (NULL, 1, 'Crispy la lipie', '25', 'Extra sos si mai putini castraveti', '540', '1'); 

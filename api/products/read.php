@@ -12,34 +12,31 @@
     // Instantiate blog post object
     $product = new Product($db);
 
-    $products_arr = FindRestaurantProducts((int)1, $db);
+    //take params
+    $restaurantID=$_GET['restaurantID'] ?? null;
+    $products_arr = array();
 
-    if(count($products_arr) > 0)
-    {
-        // Turn to JSON & output
-        echo json_encode($products_arr);
+    if($restaurantID){
+      $products_arr = FindRestaurantProducts($restaurantID, $db);
     }
-    else 
-    {
-        // No products
-        echo json_encode(
-        array('message' => 'No products Found')
-        );
-    }
-
-
+    
+    // Turn to JSON & output
+    echo json_encode($products_arr); 
+      
   function FindRestaurantProducts($restaurantID, $db)
   {
     $productDAO = new Product($db);
+
     $productsResult = $productDAO->findAllProductsByRestaurantId($restaurantID);
   
     $productsNum = $productsResult->rowCount();
+
+    // Restaurants array
+    $products_array = array();
+
     // Check if any posts
     if($productsNum > 0)
     {
-      // Restaurants array
-      $products_array = array();
-
       while($productRow = $productsResult->fetch(PDO::FETCH_ASSOC))
       {
         extract($productRow);
@@ -57,7 +54,6 @@
         // Push to "data"
         array_push($products_array, $product_item);
       }
-
-      return $products_array;
     }
+    return $products_array;
   }

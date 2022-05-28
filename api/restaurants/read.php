@@ -9,37 +9,43 @@ include_once '../../models/Restaurant.php';
 $database = new Database();
 $db = $database->connect();
 
-$shouldLoadProducts = true; //temp hardcoded. Should come in as a param
-
-
 $restaurant = new Restaurant($db);
 
-$result = $restaurant->findById(1);
+//$param=$_GET['param'] ?? null; // take param, else if param is missing $param = 1
+//take params
+$loadProducts = $_GET['loadProducts'] ?? true;
+$restaurantName=$_GET['restaurantName'] ?? null;
 
-if ($result->rowCount() > 0)
-{
-    $row = $result->fetch(PDO::FETCH_ASSOC);
+$restaurant_items = array();
 
-    extract($row);
+if($restaurantName){
+    $result = $restaurant->findByName($restaurantName);
 
-    $restaurant_item = array(
-        'ID' => $id,
-        'name' => $name
-    );
-
-    if ($shouldLoadProducts > 0)
+    if ($result->rowCount() > 0)
     {
-        $productsApiRequest = file_get_contents('http://localhost/EzMenu/api/products/read.php');
-        $products = json_decode($productsApiRequest, true);
-        $restaurant_item['products'] = $products;
-    }
+        $row = $result->fetch(PDO::FETCH_ASSOC);
 
-    echo json_encode($restaurant_item);
+        extract($row);
+
+        $restaurant_items = array(
+            'ID' => $id,
+            'name' => $name,
+            'products' => array()
+        );
+
+        if ($loadProducts)
+        {
+            $result = $restaurant->findIdByName($restaurantName);
+            $row = $result->fetch(PDO::FETCH_ASSOC);
+            extract($row);
+            $restaurantID = $id;
+            $productsApiRequest = file_get_contents("http://localhost/EzMenu/api/products/read.php?restaurantID=$restaurantID");
+            $products = json_decode($productsApiRequest, true);
+            $restaurant_items['products'] = $products;
+        }
+    }
 }
-else
-{
-    echo json_encode(array(
-        'message' => 'No restaurant Found'
-    ));
-}
+
+echo json_encode($restaurant_items);
+
 ?>

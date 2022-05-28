@@ -9,20 +9,34 @@
 <body>
 
 <?php
-        $getRestaurantApiRequest = file_get_contents('http://localhost/EzMenu/api/restaurants/read.php');
-        $resraurantResult = json_decode($getRestaurantApiRequest, true);
-        echo "<div>" . $resraurantResult['name'] . "</div>";
+        $loadProducts = $_GET['loadProducts'] ?? true;
+        $restaurantName=$_GET['restaurantName'] ?? null;
 
-        $products = $resraurantResult['products'];
-
-        for($i=0;$i<count($products);$i++)
+        if($restaurantName)
         {
-            echo "<div style=\"border-radius:10px;width: 300px; background-color:grey;\">";
-            echo "<p>" . $products[$i]['title']. "</p>";
-            echo "<p>" . $products[$i]['description']. "</p>";
-            echo "<p>" . $products[$i]['price']. " lei</p>";
-            echo "<p>" . $products[$i]['cantity']. " grame</p>";
-            echo "</div>";
+            $restaurantName = urlencode($restaurantName);
+            $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantName=$restaurantName&loadProducts=$loadProducts");
+            $restaurant = json_decode($getRestaurantApiRequest, true);
+            if(count($restaurant))
+            {
+                echo "<div>" . $restaurant['name'] . "</div>";
+            
+                $products = $restaurant['products'];
+
+                for($i=0;$i<count($products);$i++)
+                {
+                    echo "<div style=\"border-radius:10px;width: 300px; background-color:grey;\">";
+                    echo "<p>" . $products[$i]['title']. "</p>";
+                    echo "<p>" . $products[$i]['description']. "</p>";
+                    echo "<p>" . $products[$i]['price']. " lei</p>";
+                    echo "<p>" . $products[$i]['cantity']. " grame</p>";
+                    echo "</div>";
+                }
+            }
+        }
+        else
+        {
+            echo "No restaurant selected!";
         }
 
 ?>
