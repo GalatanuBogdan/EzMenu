@@ -15,8 +15,10 @@ $restaurant = new Restaurant($db);
 //take params
 $loadProducts = $_GET['loadProducts'] ?? 1;
 $loadCategories = $_GET['loadCategories'] ?? 1;
+$loadTables = $_GET['loadTables'] ?? 1;
 $restaurantName=$_GET['restaurantName'] ?? null;
 $restaurantID=$_GET['restaurantID'] ?? null;
+
 
 $restaurant_items = array();
 
@@ -35,6 +37,7 @@ if($restaurantName)
 $result = null;
 if($restaurantID)
     $result = $restaurant->findById($restaurantID);
+
 if ($result != null && $result->rowCount() > 0)
 {
     $row = $result->fetch(PDO::FETCH_ASSOC);
@@ -44,7 +47,8 @@ if ($result != null && $result->rowCount() > 0)
         'ID' => $id,
         'name' => $name,
         'products' => array(),
-        'categories' => array()
+        'categories' => array(),
+        'tables' => array()
     );
 
     if ($loadProducts)
@@ -59,6 +63,13 @@ if ($result != null && $result->rowCount() > 0)
         $categoriesApiRequest = file_get_contents("http://localhost/EzMenu/api/categories/read.php?restaurantID=$restaurantID");
         $categories = json_decode($categoriesApiRequest, true);
         $restaurant_items['categories'] = $categories;
+    }
+
+    if($loadTables)
+    {
+        $tablesApiRequest = file_get_contents("http://localhost/EzMenu/api/tables/read.php?restaurantID=$restaurantID");
+        $tables = json_decode($tablesApiRequest, true);
+        $restaurant_items['tables'] = $tables;
     }
 }
 

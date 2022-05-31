@@ -11,11 +11,35 @@
 <?php
         $loadProducts = $_GET['loadProducts'] ?? 1;
         $restaurantName=$_GET['restaurantName'] ?? null;
+        $restaurantID=$_GET['restaurantID'] ?? null;
+        $loadCategories=$_GET['loadCategories'] ?? 1;
 
         if($restaurantName)
         {
             $restaurantName = urlencode($restaurantName);
-            $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantName=$restaurantName&loadProducts=$loadProducts");
+            $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantName=$restaurantName&loadProducts=$loadProducts&loadCategories=$loadCategories");
+            $restaurant = json_decode($getRestaurantApiRequest, true);
+            if($restaurant && count($restaurant))
+            {
+                echo "<div>" . $restaurant['name'] . "</div>";
+            
+                $products = $restaurant['products'];
+
+                for($i=0;$i<count($products);$i++)
+                {
+                    echo "<div style=\"border-radius:10px;width: 300px; background-color:grey;\">";
+                    echo "<p>" . $products[$i]['title']. "</p>";
+                    echo "<p>" . $products[$i]['description']. "</p>";
+                    echo "<p>" . $products[$i]['price']. " lei</p>";
+                    echo "<p>" . $products[$i]['cantity']. " grame</p>";
+                    echo "</div>";
+                }
+            }
+        }
+        else if($restaurantID)
+        {
+            $restaurantName = urlencode($restaurantName);
+            $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantID=$restaurantID&loadProducts=$loadProducts&loadCategories=$loadCategories");
             $restaurant = json_decode($getRestaurantApiRequest, true);
             if($restaurant && count($restaurant))
             {

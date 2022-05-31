@@ -17,15 +17,20 @@
     //init all variables that uses dynamic data from DB
     $restaurantID = 1; //when generating the QRCode, this should be set
     $tableNumber = 1;  //when generating the QRCode, this should be set
-
+    
+    $restaurantID=$_GET['restaurantID'] ?? 1;
+    $restaurantTableNumber=$_GET['tableNumber'] ?? 1;
+    
     $getRestaurantApiRequest = file_get_contents("http://localhost/EzMenu/api/restaurants/read.php?restaurantID=$restaurantID");
     $restaurant = json_decode($getRestaurantApiRequest, true);
     $products = array();
     $categories = array();
+    $tables = array();
     if($restaurant != null)
     {
         $products = $restaurant['products'];
         $categories = $restaurant['categories'];
+        $tables = $restaurant['tables'];
     }
     else
     {
@@ -33,10 +38,15 @@
         //to do: add an exception
     }
 
-    
+    $table = null;
+    foreach($tables as $current_table) {
+        if($current_table['tableNumber'] == $restaurantTableNumber)
+        {
+            $table = $current_table;
+            break;
+        }
+    }
 ?>
-
-
 <body>
     
     <div style="border-radius:0.8rem !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);" ; class="container bg-white shadow-lg">
@@ -44,12 +54,18 @@
             <div class="col-md-8 align-self-center">
                 <div class="row">
                     <div class="col-md-8 bg-white">
-                        <?php echo '<h2 style="text-align:center; font-weight: bold;">' . $restaurant['name'] .'!</h2>' ; ?>
+                        <?php 
+                            if($restaurant)
+                                echo '<h2 style="text-align:center; font-weight: bold;">' . $restaurant['name'] .'!</h2>' ; ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12 bg-white">
-                        <?php echo '<h3 style="text-align:center; font-weight: bold;"> Table #' . $tableNumber .'</h3>'; ?>
+
+                        <?php 
+                            if($table)
+                                echo '<h3 style="text-align:center; font-weight: bold;"> Table #' . $table['tableNumber'] .'</h3>';
+                         ?>
                     </div>
                 </div>
 
@@ -121,33 +137,27 @@
                 <!-- searchBar -->
                 <div class="form d-flex col-md-9">
                     <i class="fa fa-search"></i>
-                    <input type="text" class="form-control form-input" placeholder="Search in Mama Mia...">
-                    <span class="left-pan"><i class="fa fa-filter"></i></span>
+                    <input id="custom-input" type="text" class="form-control form-input" placeholder="Search in Mama Mia...">
+                    <span class="absolute left-pan"><i class="fa fa-filter"></i></span>
                 </div>
-
                 <!-- Selected category + allergensBar -->
                 <br>
                 <div class="row">
                     <!-- Selected category -->
+                    <div class="col-md-4">
                     <?php
                         if($currentSelected != null)
                         {
-                            echo '
-                                <div class="col-md-4">
-                                    <h3 style="font-weight:bold">' . $currentSelected['name'] . ':</h3>
-                                </div>
-                            ';
+                            echo '<h3 style="font-weight:bold">' . $currentSelected['name'] . ':</h3> ';
                         }
                         else
                         {
-                           //something wrong to categories, but add the col-md-2 class for better spacing
-                            echo '
-                            <div class="col-md-4">
-                                <h3 style="font-weight:bold"></h3>
-                            </div>
-                            ';
+                            //something wrong to categories, but add the col-md-2 class for better spacing
+                            echo '<h3 style="font-weight:bold"></h3>';
                         }
+                       
                     ?>
+                     </div>
                     <div class="col-md-7">
                         <div class="row">
                             <label  class="col-md-8 p-0 m-0 d-flex" for="whatev2" style="border-radius:0.8rem !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);">
@@ -159,7 +169,7 @@
                     </div>
                 </div>
 
-                <div class= "d-flex row mt-5">
+                <div class= "d-flex row mt-5" id="products-list">
                     <?php
                         for($i=0;$i<count($products);$i++)
                         {
@@ -210,6 +220,133 @@
     </div>
 
 </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script>	
+    function autocomplete(inp, products)
+    {
+        /*the autocomplete function takes two arguments,
+        the text field element and an array of possible autocompleted values:*/
+        /*execute a function when someone writes in the text field:*/
+        inp.addEventListener("input", function(e)
+        {
+            var productsListContainer, inputFormText = this.value;
+            /*close any already open lists of autocompleted values*/
+            clearSearchResults();
+
+            console.log(inputFormText);
+
+            /*create a DIV element that will contain the items (values):*/
+            productsListContainer = document.getElementById("products-list");
+            
+
+            var productsToShow = getFilteredProductsResults(inputFormText, products);
+
+            for (var i = 0; i < productsToShow.length; i++)
+            {			
+                var productItem, productImage, textSection;
+                productItem = document.createElement("DIV");
+                /*make the matching letters bold:*/
+                productItem.setAttribute("class", "col-md-4 m-4 mt-5 p-0 menu-product");
+                
+                productImage = document.createElement("IMG");
+                productImage.setAttribute("class", "col-4 m-0 p-0 product-img");
+                productImage.setAttribute("src", "img/productDummyImg.png");
+                productItem.appendChild(productImage);
+
+                textSection = document.createElement("DIV");
+                textSection.setAttribute("class", "d-flex flex-column col-md-8 m-0 p-0 justify-content-around")
+                productItem.appendChild(textSection);
+
+                var productTitle, productShortDescription, productWeight, productPrice, productBtnContainer, productAddBtn;
+
+                productTitle = document.createElement("DIV");
+                productTitle.setAttribute("class", "row m-2 text-left product-text font-weight-bold");
+                productTitle.innerHTML = productsToShow[i]['title'];
+                textSection.appendChild(productTitle);
+
+                productShortDescription = document.createElement("DIV");
+                productShortDescription.setAttribute("class", "d-flex row m-2 small text-left product-text");
+                productShortDescription.innerHTML = productsToShow[i]['previewDescription'];
+                textSection.appendChild(productShortDescription);
+
+                productCantity = document.createElement("DIV");
+                productCantity.setAttribute("class", "d-flex row m-2 small text-left product-text");
+                productCantity.innerHTML = productsToShow[i]['cantity'];
+                textSection.appendChild(productCantity);
+
+                productPrice = document.createElement("DIV");
+                productPrice.setAttribute("class", "row d-flex justify-content-between m-2 text-left font-weight-bold product-text");
+                productPrice.innerHTML = productsToShow[i]['price'];
+                textSection.appendChild(productPrice);
+
+                productBtnContainer = document.createElement("DIV");
+                productBtnContainer.setAttribute("class", "row d-flex p-0 pr-3 pb-2 m-0 font-weight-bold justify-content-end");
+                productBtnContainer.innerHTML = "<button class=\"d-inline-flex m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold product-img justify-content-center\" style=\"border-radius:15px; border-color:#FDFDFD;background-color:#F9B356\">Add</button>";
+                textSection.appendChild(productBtnContainer);
+                
+                productsListContainer.appendChild(productItem);
+            }
+        });
+    }
+
+    function getFilteredProductsResults(searchInputText, products)
+    {
+        var showRandomProducts = false;
+        var matchedProducts = [];
+        for (var i = 0; i < products.length; i++)
+        {
+            var textCopy = searchInputText;
+            var match = false;
+            while(textCopy.length > 0 && !match)
+            {
+                if (products[i]['title'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase() || showRandomProducts)
+                    match = true;
+                
+                textCopy = textCopy.slice(0, -1);
+                console.log(textCopy);
+            }
+
+            if(match)
+                matchedProducts.push(products[i]);
+        }
+        return matchedProducts;
+    }
+
+    function clearSearchResults(elmnt)
+    {
+        var productsList = document.getElementById("products-list");
+        if(productsList)
+        {
+            var first = productsList.firstElementChild;
+            while (first)
+            {
+                first.remove();
+                first = productsList.firstElementChild;
+            }
+        }
+    }
+
+    var jsRestaurantID = "<?php echo $restaurantID; ?>";
+    var loadProductsApiRequest = "http://localhost/ezmenu/api/products/read.php?restaurantID=" + jsRestaurantID;
+    // Assign handlers immediately after making the request,
+    var productsJson = jQuery.getJSON( loadProductsApiRequest, function() {})
+        .done(function() {
+            //console.log( "second success" );
+            console.log(productsJson);
+            var productsArray = JSON.parse(productsJson.responseText);
+            console.log(productsArray);
+            autocomplete(document.getElementById("custom-input"), productsArray);
+        })
+        .fail(function() {
+        //console.log( "error" );
+        })
+        .always(function() {
+        //console.log( "complete" );
+        });
+        
+</script>
 
 <!-- bootstrap scripts start -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
