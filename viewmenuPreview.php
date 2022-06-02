@@ -223,9 +223,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
 <script>	
-    //temporary fix to automaticallt redirect to http version
+    //temporary fix to automatically redirect to http version. To avoid problems with js api calls
+    var currentURL = window.location;
+    console.log(window.location);
+    if(window.location.protocol == "https:")
+    {  
+        window.location.href = "http:/" + window.location.host + window.location.pathname + window.location.search;
+    }
     
-
 
     function searchProducts(inp, products, categories)
     {
