@@ -14,42 +14,44 @@ CREATE TABLE restaurant_table(
 );
 
 CREATE TABLE product(
-	ID int PRIMARY KEY AUTO_INCREMENT,
-	restaurantID int,
+    ID int PRIMARY KEY AUTO_INCREMENT,
+    restaurantID int,
     title VARCHAR(64),
     price FLOAT,
-	previewDescription VARCHAR(32),
-	imageURL VARCHAR(256),
-    description VARCHAR(256),
-    cantity INT,
-    disponibility BOOLEAN,
-	FOREIGN KEY (restaurantID) REFERENCES restaurant(ID)
+    previewDescription VARCHAR(32),
+     imageURL VARCHAR(256),
+     description VARCHAR(256),
+     cantity INT,
+     disponibility BOOLEAN,
+     categories JSON,
+     allergens JSON,
+      FOREIGN KEY (restaurantID) REFERENCES restaurant(ID)
 );
 
 
 CREATE TABLE categories(
-	ID int PRIMARY KEY AUTO_INCREMENT,
-	productID int,
-    	name VARCHAR(64),
-	FOREIGN KEY (productID) REFERENCES product(ID)
+    ID int PRIMARY KEY AUTO_INCREMENT,
+     restaurantID int,
+     name VARCHAR(64),
+     FOREIGN KEY (restaurantID) REFERENCES restaurant(ID)
 );
 
 create table allergens(
     id integer primary key auto_increment,
-    name varchar(50)
+     name varchar(50)
 );
 
-create table product_allergens(
-    id integer primary key auto_increment,
-    product_id integer,
-    allergen_id integer,
-    foreign key (product_id) references product(id) on delete cascade,
-    foreign key (allergen_id) references allergens(id) on delete cascade
-);
+-- create table product_allergens(
+--     id integer primary key auto_increment,
+--     product_id integer,
+--     allergen_id integer,
+--     foreign key (product_id) references product(id) on delete cascade,
+--     foreign key (allergen_id) references allergens(id) on delete cascade
+-- );
 
 INSERT INTO `restaurant` (`name`) VALUES ("MammaMia");
 -- //de facut
-INSERT INTO `restaurant` (`name`) VALUES ("MammaMia2");
+INSERT INTO `restaurant` (`name`) VALUES ("Take & Eat");
 
 -- // produse "MammaMia"
 
@@ -85,12 +87,43 @@ INSERT INTO `restaurant_table` (`ID`, `restaurantID`, `tableNumber`) VALUES (NUL
 INSERT INTO `restaurant_table` (`ID`, `restaurantID`, `tableNumber`) VALUES (NULL, '1', '5');
 INSERT INTO `restaurant_table` (`ID`, `restaurantID`, `tableNumber`) VALUES (NULL, '1', '6');
 
--- INSERT INTO `restaurant_table` (`ID`, `restaurantID`, `tableNumber`, `viewOrderStatus`, `callWaiterStatus`, `requestBillStatus`) VALUES (NULL, '2', '1', '0', '0', '0');
---
--- INSERT INTO `restaurant_table` (`ID`, `restaurantID`, `tableNumber`, `viewOrderStatus`, `callWaiterStatus`, `requestBillStatus`) VALUES (NULL, '3', '1', '0', '0', '0');
+
+INSERT INTO `allergens` (`name`) VALUE ('lapte');
+INSERT INTO `allergens` (`name`) VALUE ('ou');
+INSERT INTO `allergens` (`name`) VALUE ('gluten');
+
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','MIC DEJUN');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','CIORBE SI SUPE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','BURGERI');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','SALATE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE DE POST/VEGANE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PASTE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE DE PUI');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE DE PORC');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE DE CURCAN');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE DE PESTE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','BUCĂTĂRIE MEXICANĂ');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','PREPARATE TRADIȚIONALE');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','GARNITURI');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','SOSURI');
+INSERT INTO `categories` (`restaurantID`,`name`) VALUE ('1','DESERT');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Shaorma de pui la lipie Big', '21,00', 'img\2ShaormadepuilalipieBig.png', 'Piept de pui rotisat, cartofi pai', 'Piept de pui rotisat, cartofi pai, salata, lipie, sosuri', '500', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Shaorma de pui la farfurie', '27,00', 'img\2Shaormadepuilafarfurie.png', 'Piept de pui rotisat, cartofi pai', 'Piept de pui rotisat, cartofi pai, salata, paine, sosuri', '500', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Crispy la lipie Big', '21,00', 'img\2CrispylalipieBig.png', 'Crispy, sos cocktail', 'Crispy, sos cocktail, salata de varza, rosii, castraveti, salata verde', '500', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Paste Carbonara', '27,00', 'img\2PasteCarbonara.png', 'Paste, ou', 'Paste, ou, smântână, parmezan, bacon', '450', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Pizza Take & Eat 32cm', '34,00', 'img\2PizzaTake&Eat32cm.png', 'Sos pizza, mozzarella', 'Sos pizza, mozzarella, prosciutto cotto, salam milano, piept pui, ardei, porumb, ciuperci', '500', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Salata crispy', '26,00', 'img\2Salatacrispy.png', 'Salata asortata, piept de pui crocant', 'Salata asortata, piept de pui crocant, masline, branza feta, cocktail dressing, crutoane', '500', '1');
+
+INSERT INTO product ( restaurantID, title, price, imageURL, previewDescription , description, cantity, disponibility) VALUES ( '2', 'Pizza Capriciosa 32cm', '32,00', 'img\2PizzaCapriciosa32cm.png', 'Sos pizza, mozzarella', 'Sos pizza, mozzarella, sunca, ardei, masline, ciuperci', '500', '1');
 
 
 
-INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '7', 'Pasta'); 
-INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '6', 'Pork'); 
-INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '3', 'Chicken'); 
+-- INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '7', 'Pasta');
+-- INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '6', 'Pork');
+-- INSERT INTO `categories` (`ID`, `productID`, `name`) VALUES (NULL, '3', 'Chicken');
