@@ -31,6 +31,10 @@
         $products = $restaurant['products'];
         $categories = $restaurant['categories'];
         $tables = $restaurant['tables'];
+        if($categories)        
+            $currentSelectedCategory = $categories[0];
+        else
+            $currentSelectedCategory = null;
     }
     else
     {
@@ -98,37 +102,32 @@
                 
                 <br>
                 <br>
-                <div class="ml-3">
+                <div id="categories-container" class="ml-3">
 
                     <?php
-                        if($categories)        
-                            $currentSelected = $categories[0];
-                        else
-                            $currentSelected = null;
+                       
 
-                        for($i=0;$i<count($categories); $i++)
-                        {
-                            if($categories[$i] == $currentSelected)
-                            {
-                                echo '
-                                    <div class="row">
-                                        <h5 style="font-weight:bold">' . $categories[$i]['name'] . '</h5>
-                                    </div>
-                                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-                                    ';
-                            }
-                            else
-                            {
-                                echo '
-                                    <div class="row">
-                                        <h5>' . $categories[$i]['name'] . '</h5>
-                                    </div>
-                                    <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
-                                ';
-                            }
-                          
-                        }
-
+                        // for($i=0;$i<count($categories); $i++)
+                        // {
+                        //     if($categories[$i] == $currentSelectedCategory)
+                        //     {
+                        //         echo '
+                        //             <a class="row text-dark" href="plm.com">
+                        //                 <h5 style="font-weight:bold">' . $categories[$i]['name'] . '</h5>
+                        //             </a>
+                        //             <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+                        //             ';
+                        //     }
+                        //     else
+                        //     {
+                        //         echo '
+                        //             <a class="row text-dark" href="plm.com">
+                        //                 <h5>' . $categories[$i]['name'] . '</h5>
+                        //             </a>
+                        //             <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+                        //         ';
+                        //     }
+                        // }
                     ?>
                 </div>
             </div>
@@ -146,9 +145,9 @@
                     <!-- Selected category -->
                     <div class="col-md-4">
                     <?php
-                        if($currentSelected != null)
+                        if($currentSelectedCategory != null)
                         {
-                            echo '<h3 style="font-weight:bold">' . $currentSelected['name'] . ':</h3> ';
+                            echo '<h3 style="font-weight:bold">' . $currentSelectedCategory['name'] . ':</h3> ';
                         }
                         else
                         {
@@ -170,7 +169,7 @@
                 </div>
 
                 <div class= "d-flex row mt-5" id="products-list">
-                    <?php
+                    <!-- <?php
                         for($i=0;$i<count($products);$i++)
                         {
                             echo 
@@ -196,7 +195,7 @@
                             </div>
                             ';
                         }
-                    ?>
+                    ?> -->
 
                     <!-- <div class="col-md-5 mr-3 menu-product">
                         <img class="col-md-4 m-2 pl-0 pr-0 product-img" src="img\productDummyImg.png" alt="">
@@ -224,92 +223,134 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
 <script>	
-    function autocomplete(inp, products)
+    //temporary fix to automaticallt redirect to http version
+    
+
+
+    function searchProducts(inp, products, categories)
     {
         /*the autocomplete function takes two arguments,
         the text field element and an array of possible autocompleted values:*/
         /*execute a function when someone writes in the text field:*/
+        
         inp.addEventListener("input", function(e)
         {
-            var productsListContainer, inputFormText = this.value;
-            /*close any already open lists of autocompleted values*/
-            clearSearchResults();
-
-            console.log(inputFormText);
-
-            /*create a DIV element that will contain the items (values):*/
-            productsListContainer = document.getElementById("products-list");
-            
-
-            var productsToShow = getFilteredProductsResults(inputFormText, products);
-
-            for (var i = 0; i < productsToShow.length; i++)
-            {			
-                var productItem, productImage, textSection;
-                productItem = document.createElement("DIV");
-                /*make the matching letters bold:*/
-                productItem.setAttribute("class", "col-md-4 m-4 mt-5 p-0 menu-product");
-                
-                productImage = document.createElement("IMG");
-                productImage.setAttribute("class", "col-4 m-0 p-0 product-img");
-                productImage.setAttribute("src", "img/productDummyImg.png");
-                productItem.appendChild(productImage);
-
-                textSection = document.createElement("DIV");
-                textSection.setAttribute("class", "d-flex flex-column col-md-8 m-0 p-0 justify-content-around")
-                productItem.appendChild(textSection);
-
-                var productTitle, productShortDescription, productWeight, productPrice, productBtnContainer, productAddBtn;
-
-                productTitle = document.createElement("DIV");
-                productTitle.setAttribute("class", "row m-2 text-left product-text font-weight-bold");
-                productTitle.innerHTML = productsToShow[i]['title'];
-                textSection.appendChild(productTitle);
-
-                productShortDescription = document.createElement("DIV");
-                productShortDescription.setAttribute("class", "d-flex row m-2 small text-left product-text");
-                productShortDescription.innerHTML = productsToShow[i]['previewDescription'];
-                textSection.appendChild(productShortDescription);
-
-                productCantity = document.createElement("DIV");
-                productCantity.setAttribute("class", "d-flex row m-2 small text-left product-text");
-                productCantity.innerHTML = productsToShow[i]['cantity'];
-                textSection.appendChild(productCantity);
-
-                productPrice = document.createElement("DIV");
-                productPrice.setAttribute("class", "row d-flex justify-content-between m-2 text-left font-weight-bold product-text");
-                productPrice.innerHTML = productsToShow[i]['price'];
-                textSection.appendChild(productPrice);
-
-                productBtnContainer = document.createElement("DIV");
-                productBtnContainer.setAttribute("class", "row d-flex p-0 pr-3 pb-2 m-0 font-weight-bold justify-content-end");
-                productBtnContainer.innerHTML = "<button class=\"d-inline-flex m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold product-img justify-content-center\" style=\"border-radius:15px; border-color:#FDFDFD;background-color:#F9B356\">Add</button>";
-                textSection.appendChild(productBtnContainer);
-                
-                productsListContainer.appendChild(productItem);
-            }
+            showFilteredProducts(inp, products, categories);
         });
+        showFilteredProducts(inp, products, categories);
     }
 
-    function getFilteredProductsResults(searchInputText, products)
+    function showFilteredProducts(inputForm, products, categories)
     {
-        var showRandomProducts = false;
+        var productsListContainer, inputFormText = inputForm.value;
+        /*close any already open lists of autocompleted values*/
+        clearSearchResults();
+
+        /*create a DIV element that will contain the items (values):*/
+        productsListContainer = document.getElementById("products-list");
+    
+        var productsToShow = getFilteredProductsResults(inputFormText, products, categories);
+
+        for (var i = 0; i < productsToShow.length; i++)
+        {			
+            var productItem, productImage, textSection;
+            productItem = document.createElement("DIV");
+            /*make the matching letters bold:*/
+            productItem.setAttribute("class", "col-md-4 m-4 mt-5 p-0 menu-product");
+            
+            productImage = document.createElement("IMG");
+            productImage.setAttribute("class", "col-4 m-0 p-0 product-img");
+            productImage.setAttribute("src", "img/productDummyImg.png");
+            productItem.appendChild(productImage);
+
+            textSection = document.createElement("DIV");
+            textSection.setAttribute("class", "d-flex flex-column col-md-8 m-0 p-0 justify-content-around")
+            productItem.appendChild(textSection);
+
+            var productTitle, productShortDescription, productPrice, productBtnContainer;
+
+            productTitle = document.createElement("DIV");
+            productTitle.setAttribute("class", "row m-2 text-left product-text font-weight-bold");
+            productTitle.innerHTML = productsToShow[i]['title'];
+            textSection.appendChild(productTitle);
+
+            productShortDescription = document.createElement("DIV");
+            productShortDescription.setAttribute("class", "d-flex row m-2 small text-left product-text");
+            productShortDescription.innerHTML = productsToShow[i]['previewDescription'];
+            textSection.appendChild(productShortDescription);
+
+            productCantity = document.createElement("DIV");
+            productCantity.setAttribute("class", "d-flex row m-2 small text-left product-text");
+            productCantity.innerHTML = productsToShow[i]['cantity'] + "gr";
+            textSection.appendChild(productCantity);
+
+            productPrice = document.createElement("DIV");
+            productPrice.setAttribute("class", "row d-flex justify-content-between m-2 text-left font-weight-bold product-text");
+            productPrice.innerHTML = productsToShow[i]['price'] + " ron";
+            textSection.appendChild(productPrice);
+
+            productBtnContainer = document.createElement("DIV");
+            productBtnContainer.setAttribute("class", "row d-flex p-0 pr-3 pb-2 m-0 font-weight-bold justify-content-end");
+            productBtnContainer.innerHTML = "<button class=\"d-inline-flex m-0 p-0 pl-2 pr-2 align-items-center btn btn-primary font-weight-bold product-img justify-content-center\" style=\"border-radius:15px; border-color:#FDFDFD;background-color:#F9B356\">Add</button>";
+            textSection.appendChild(productBtnContainer);
+            
+            productsListContainer.appendChild(productItem);
+        }
+    }
+
+    function getFilteredProductsResults(searchInputText, products, categories)
+    {
+        var showAllProducts = false;  
+        if(searchInputText.length == 0)
+            showAllProducts = true;
+
         var matchedProducts = [];
+        
+        //start searching products by their names
         for (var i = 0; i < products.length; i++)
+        {
+            var textCopy = searchInputText;
+            var match = false || showAllProducts;
+
+            while(textCopy.length > 0 && !match)
+            {
+                if (products[i]['title'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase())
+                    match = true;
+                textCopy = textCopy.slice(0, -1);
+            }
+
+            if(match)
+                matchedProducts.push(products[i]);
+        }
+
+        //start searching products by their categories names
+        for(var i=0;i<categories.length;i++)
         {
             var textCopy = searchInputText;
             var match = false;
             while(textCopy.length > 0 && !match)
             {
-                if (products[i]['title'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase() || showRandomProducts)
+                if(categories[i]['name'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase())
+                {
+                    //we have a posible match with a category name. Search all the products from that category and show them here
+                    for(var j=0;j<products.length;j++)
+                        if(products[i]['ID'] == categories[i]['productID'])
+                        {
+                            //add the products just if they wasn't already added
+                            var wasAlreadyAdded = false;
+                            for(var k=0;k<matchedProducts.length;k++)
+                                if(matchedProducts['ID'] == products[i]['ID'])
+                                {
+                                    wasAlreadyAdded = true;
+                                    break;
+                                }
+                            if(!wasAlreadyAdded)
+                                matchedProducts.push(products[i]);
+                        }
                     match = true;
-                
+                }
                 textCopy = textCopy.slice(0, -1);
-                console.log(textCopy);
             }
-
-            if(match)
-                matchedProducts.push(products[i]);
         }
         return matchedProducts;
     }
@@ -330,22 +371,115 @@
 
     var jsRestaurantID = "<?php echo $restaurantID; ?>";
     var loadProductsApiRequest = "http://localhost/ezmenu/api/products/read.php?restaurantID=" + jsRestaurantID;
+    var loadCategoriesRequest = "http://localhost/ezmenu/api/categories/read.php?restaurantID=" + jsRestaurantID;
+    var productsArray = [];
+    var categoriesArray = [];
+
+    var elementsLoaded = 0;
+    var numOfRequests = 2;
+    var categoriesJson = jQuery.getJSON( loadCategoriesRequest, function() {})
+    .done(function() {
+        categoriesArray = JSON.parse(categoriesJson.responseText);
+        elementsLoaded++;
+        allQueriesCompleted();
+        showCategories(categoriesArray);
+    })
+    .fail(function() {
+    })
+    .always(function() {
+    });
+
     // Assign handlers immediately after making the request,
     var productsJson = jQuery.getJSON( loadProductsApiRequest, function() {})
         .done(function() {
-            //console.log( "second success" );
-            console.log(productsJson);
-            var productsArray = JSON.parse(productsJson.responseText);
-            console.log(productsArray);
-            autocomplete(document.getElementById("custom-input"), productsArray);
+            productsArray = JSON.parse(productsJson.responseText);
+            searchProducts(document.getElementById("custom-input"), productsArray, categoriesArray);
+            elementsLoaded++;
+            allQueriesCompleted()
         })
         .fail(function() {
-        //console.log( "error" );
         })
         .always(function() {
-        //console.log( "complete" );
         });
-        
+
+    function allQueriesCompleted()
+    {
+        if(elementsLoaded == numOfRequests)
+        {
+            console.log(categoriesArray);
+            console.log(productsArray);
+            searchProducts(document.getElementById("custom-input"), productsArray, categoriesArray);
+            //all asynchronally requests finished. So, move on 
+        }
+        //to do, make the search just a part of the products criterias
+    }
+
+    function clearCategoriesList()
+    {
+        //to do: clearSearchResults() and that can be generalized as a single function that takes as a param the container
+        var categoriesContainer =
+        document.getElementById("categories-container");
+        if(categoriesContainer)
+        {
+            var first = categoriesContainer.firstElementChild;
+            while (first)
+            {
+                first.remove();
+                first = categoriesContainer.firstElementChild;
+            }
+        }
+    }
+
+    function showCategories(categories)
+    {
+        console.log(categories);
+
+        /*close any already open lists of autocompleted values*/
+        //clearCategoriesList();
+
+        /*create a DIV element that will contain the items (values):*/
+        var categoriesListContainer = document.getElementById("categories-container");
+    
+        // <a class="row text-dark" href="plm.com">
+        //     <div >
+        //         <h5 style="font-weight:bold">' . $categories[$i]['name'] . '</h5>
+        //     </div>
+        // </a>
+        // <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
+        // ';
+
+        var currentSelectedCategoryID = "<?php
+            if($currentSelectedCategory != null)
+                echo $currentSelectedCategory["ID"];
+            else
+                echo -1; //no categories ID should start with -1
+        ?>";
+
+        for (var i = 0; i < categories.length; i++)
+        {			
+            var categoryItem;
+            categoryItem = document.createElement("A");
+            /*make the matching letters bold:*/
+            categoryItem.setAttribute("class", "row text-dark");
+            categoryItem.setAttribute("href", "bunBunBun.php");
+
+            //to do: set categoryItemHref
+
+            var categoryText = document.createElement("H5");
+            if(currentSelectedCategoryID == categories[i]['ID'])
+                categoryText.setAttribute("class", "font-weight-bold")
+            categoryText.innerHTML = categories[i]['name'];
+            categoryItem.appendChild(categoryText);
+
+            var lineBetween = document.createElement("HR");
+            lineBetween.setAttribute("style", "border-top: 1px solid rgba(0,0,0,.3); width:70%;");
+            lineBetween.setAttribute("class", "border-top: 1px solid rgba(0,0,0,.3); row mt-1");
+            
+            categoriesListContainer.appendChild(categoryItem);
+            categoriesListContainer.appendChild(lineBetween);
+        }
+
+    }        
 </script>
 
 <!-- bootstrap scripts start -->
