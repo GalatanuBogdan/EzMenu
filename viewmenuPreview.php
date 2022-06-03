@@ -250,15 +250,15 @@
         
         inp.addEventListener("input", function(e)
         {
-            showFilteredProducts(inp, products, categories);
+            showFilteredProducts(inp, products, null);
             document.cookie="currentSelectedCategory=-1";
             showCategories(categoriesArray);
 
         });
-        showFilteredProducts(inp, products, categories);
+        showFilteredProducts(inp, products, null);
     }
 
-    function showFilteredProducts(inputForm, products, categories)
+    function showFilteredProducts(inputForm, products, categoryIDFilter)
     {
         var productsListContainer, inputFormText = inputForm.value;
         /*close any already open lists of autocompleted values*/
@@ -267,7 +267,7 @@
         /*create a DIV element that will contain the items (values):*/
         productsListContainer = document.getElementById("products-list");
     
-        var productsToShow = getFilteredProductsResults(inputFormText, products, categories);
+        var productsToShow = getFilteredProductsResults(inputFormText, products, categoryIDFilter);
 
         for (var i = 0; i < productsToShow.length; i++)
         {			
@@ -317,14 +317,40 @@
         }
     }
 
-    function getFilteredProductsResults(searchInputText, products, categories)
+    function getFilteredProductsResults(searchInputText, products, categoryIDFilter)
     {
         let showAllProducts = false;  
         if(searchInputText.length == 0)
             showAllProducts = true;
 
         let matchedProducts = [];
-        
+        console.log(categoryIDFilter);
+        if(categoryIDFilter)
+        {
+            for(let i=0;i<products.length;i++)
+            {
+                let productCategories = products[i]['categories'];
+                for(let j=0;j<productCategories.length;j++)
+                {
+                    if(productCategories[j] == categoryIDFilter)
+                    {
+                        let wasAlreadyAdded = false;
+                        for(let k=0;k<matchedProducts.length;k++)
+                            if(matchedProducts[k]['ID'] == products[i]['ID'])
+                            {
+                                wasAlreadyAdded = true;
+                                break;
+                            }
+                        if(!wasAlreadyAdded)
+                            matchedProducts.push(products[i]);
+                        break;
+                    }
+                }
+            }
+            return matchedProducts;
+        }
+
+
         //start searching products by their names
         for (let i = 0; i < products.length; i++)
         {
@@ -342,37 +368,8 @@
                 matchedProducts.push(products[i]);
         }
             
-        let textCopy = searchInputText;
-        while(textCopy.length > 2)
-        {
-            for(let i=0;i<categories.length;i++)
-            {
-                if(categories[i]['name'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase())
-                {
-                    for(let j=0;j<products.length;j++)
-                    {
-                        let productCategories = products[j]['categories'];
-                        for(let k=0;k<productCategories.length;k++)
-                        {
-                            if(productCategories[k] == categories[i]['ID'])
-                            {
-                                let wasAlreadyAdded = false;
-                                for(let l=0;l<matchedProducts.length;l++)
-                                    if(matchedProducts[l]['ID'] == products[j]['ID'])
-                                    {
-                                        wasAlreadyAdded = true;
-                                        break;
-                                    }
-                                if(!wasAlreadyAdded)
-                                    matchedProducts.push(products[j]);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            textCopy = textCopy.slice(0, -1);
-        }
+       
+           
 
 
         return matchedProducts;
@@ -517,7 +514,7 @@
                     {
                         var inputForm = document.getElementById("custom-input");
                         inputForm.value = categories[j]['name'];
-                        showFilteredProducts(inputForm, productsArray, categories);
+                        showFilteredProducts(inputForm, productsArray, this.id);
                         document.cookie="currentSelectedCategory=" + this.id;
                         showCategories(categories);
                     }
