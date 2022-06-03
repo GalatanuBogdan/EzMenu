@@ -25,7 +25,7 @@
 
                 $category = array(
                     'ID' => $id,
-                    'productID' => $productID,
+                    'restaurantID' => $restaurantID,
                     'name' => $name
                 );
 

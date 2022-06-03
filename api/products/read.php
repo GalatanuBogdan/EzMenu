@@ -50,7 +50,9 @@
           'previewDescription' => $previewDescription,
           'description' => $description,
           'cantity' => $cantity,
-          'disponibility' => $disponibility
+          'disponibility' => $disponibility,
+          'categories' => json_decode($categories),
+          'allergens' => json_decode($allergens)
         );
 
         // Push to "data"

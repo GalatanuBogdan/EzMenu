@@ -71,6 +71,8 @@ if ($result != null && $result->rowCount() > 0)
         $tables = json_decode($tablesApiRequest, true);
         $restaurant_items['tables'] = $tables;
     }
+
+    //to do: allergens
 }
 
 echo json_encode($restaurant_items);

@@ -29,7 +29,9 @@
             p.previewDescription,
             p.description,
             p.cantity,
-            p.disponibility
+            p.disponibility,
+            p.categories,
+            p.allergens
             FROM
             ' . $this->table . ' p
             WHERE p.restaurantID = ' . $restaurantID;

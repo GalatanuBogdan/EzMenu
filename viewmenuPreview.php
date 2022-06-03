@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<script>
+    //temporary fix to automatically redirect to http version. To avoid problems with js api calls
+    var currentURL = window.location;
+    if(window.location.protocol == "https:")
+    {  
+        window.location.href = "http:/" + window.location.host + window.location.pathname + window.location.search;
+    }
+    document.cookie="currentSelectedCategory=-1";
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -82,8 +92,8 @@
                     <h3 class="col-4 btn-text">request bill</h3>
                 </div>
                 <div class="row justify-content-around">
-                    <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\firstImageFromWebsite.png" alt="">
-                    <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\firstImageFromWebsite.png" alt="">
+                    <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\viewOrderIcon.png" alt="">
+                    <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\requestWaiterIcon.png" alt="">
                     <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\firstImageFromWebsite.png" alt="">
                 </div>
 
@@ -143,17 +153,18 @@
                 <br>
                 <div class="row">
                     <!-- Selected category -->
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="search-result-status-container">
                     <?php
-                        if($currentSelectedCategory != null)
-                        {
-                            echo '<h3 style="font-weight:bold">' . $currentSelectedCategory['name'] . ':</h3> ';
-                        }
-                        else
-                        {
-                            //something wrong to categories, but add the col-md-2 class for better spacing
-                            echo '<h3 style="font-weight:bold"></h3>';
-                        }
+                        // if($currentSelectedCategory != null)
+                        // {
+                        //     echo '<h3 style="font-weight:bold">' . $currentSelectedCategory['name'] . ':</h3> ';
+                        // }
+                        // else
+                        // {
+                        //     //something wrong to categories, but add the col-md-2 class for better spacing
+                        //     echo '<h3 style="font-weight:bold"></h3>';
+                        // }
+                        echo '<h3 style="font-weight:bold"> Results:</h3> ';
                        
                     ?>
                      </div>
@@ -222,15 +233,14 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 
-<script>	
-    //temporary fix to automatically redirect to http version. To avoid problems with js api calls
-    var currentURL = window.location;
-    console.log(window.location);
-    if(window.location.protocol == "https:")
-    {  
-        window.location.href = "http:/" + window.location.host + window.location.pathname + window.location.search;
+<script>
+
+    function cleanSearchInputOnLoadingPage()
+    {
+        var searchInput = document.getElementById("custom-input").value = "";
     }
-    
+
+    cleanSearchInputOnLoadingPage(); //its role is when the page is firsly loaded, to cleanup the inputForm
 
     function searchProducts(inp, products, categories)
     {
@@ -241,6 +251,9 @@
         inp.addEventListener("input", function(e)
         {
             showFilteredProducts(inp, products, categories);
+            document.cookie="currentSelectedCategory=-1";
+            showCategories(categoriesArray);
+
         });
         showFilteredProducts(inp, products, categories);
     }
@@ -276,7 +289,7 @@
 
             productTitle = document.createElement("DIV");
             productTitle.setAttribute("class", "row m-2 text-left product-text font-weight-bold");
-            productTitle.innerHTML = productsToShow[i]['title'];
+            productTitle.innerHTML = productsToShow[i]['title'] + "_" + productsToShow[i]['ID'];
             textSection.appendChild(productTitle);
 
             productShortDescription = document.createElement("DIV");
@@ -305,17 +318,17 @@
 
     function getFilteredProductsResults(searchInputText, products, categories)
     {
-        var showAllProducts = false;  
+        let showAllProducts = false;  
         if(searchInputText.length == 0)
             showAllProducts = true;
 
-        var matchedProducts = [];
+        let matchedProducts = [];
         
         //start searching products by their names
-        for (var i = 0; i < products.length; i++)
+        for (let i = 0; i < products.length; i++)
         {
-            var textCopy = searchInputText;
-            var match = false || showAllProducts;
+            let textCopy = searchInputText;
+            let match = false || showAllProducts;
 
             while(textCopy.length > 0 && !match)
             {
@@ -327,36 +340,40 @@
             if(match)
                 matchedProducts.push(products[i]);
         }
-
-        //start searching products by their categories names
-        for(var i=0;i<categories.length;i++)
+            
+        let textCopy = searchInputText;
+        while(textCopy.length > 2)
         {
-            var textCopy = searchInputText;
-            var match = false;
-            while(textCopy.length > 0 && !match)
+            for(let i=0;i<categories.length;i++)
             {
                 if(categories[i]['name'].substr(0, textCopy.length).toUpperCase() == textCopy.toUpperCase())
                 {
-                    //we have a posible match with a category name. Search all the products from that category and show them here
-                    for(var j=0;j<products.length;j++)
-                        if(products[i]['ID'] == categories[i]['productID'])
+                    for(let j=0;j<products.length;j++)
+                    {
+                        let productCategories = products[j]['categories'];
+                        for(let k=0;k<productCategories.length;k++)
                         {
-                            //add the products just if they wasn't already added
-                            var wasAlreadyAdded = false;
-                            for(var k=0;k<matchedProducts.length;k++)
-                                if(matchedProducts['ID'] == products[i]['ID'])
-                                {
-                                    wasAlreadyAdded = true;
-                                    break;
-                                }
-                            if(!wasAlreadyAdded)
-                                matchedProducts.push(products[i]);
+                            if(productCategories[k] == categories[i]['ID'])
+                            {
+                                let wasAlreadyAdded = false;
+                                for(let l=0;l<matchedProducts.length;l++)
+                                    if(matchedProducts[l]['ID'] == products[j]['ID'])
+                                    {
+                                        wasAlreadyAdded = true;
+                                        break;
+                                    }
+                                if(!wasAlreadyAdded)
+                                    matchedProducts.push(products[j]);
+                                break;
+                            }
                         }
-                    match = true;
+                    }
                 }
-                textCopy = textCopy.slice(0, -1);
             }
+            textCopy = textCopy.slice(0, -1);
         }
+
+
         return matchedProducts;
     }
 
@@ -392,6 +409,7 @@
     .fail(function() {
     })
     .always(function() {
+        console.log(categoriesJson);
     });
 
     // Assign handlers immediately after making the request,
@@ -411,8 +429,6 @@
     {
         if(elementsLoaded == numOfRequests)
         {
-            console.log(categoriesArray);
-            console.log(productsArray);
             searchProducts(document.getElementById("custom-input"), productsArray, categoriesArray);
             //all asynchronally requests finished. So, move on 
         }
@@ -435,12 +451,29 @@
         }
     }
 
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        
+        for(let i = 0; i <ca.length; i++)
+        {
+            let c = ca[i];
+            while (c.charAt(0) == ' ')
+                c = c.substring(1);
+            
+            if (c.indexOf(name) == 0)
+                return c.substring(name.length, c.length);
+        }
+
+        return "";
+    }
+
     function showCategories(categories)
     {
         console.log(categories);
-
         /*close any already open lists of autocompleted values*/
-        //clearCategoriesList();
+        clearCategoriesList();
 
         /*create a DIV element that will contain the items (values):*/
         var categoriesListContainer = document.getElementById("categories-container");
@@ -453,26 +486,22 @@
         // <hr style="border-top: 1px solid rgba(0,0,0,.3); width:70%;" class="row mt-1" />
         // ';
 
-        var currentSelectedCategoryID = "<?php
-            if($currentSelectedCategory != null)
-                echo $currentSelectedCategory["ID"];
-            else
-                echo -1; //no categories ID should start with -1
-        ?>";
+        var currentSelectedCategoryID = getCookie("currentSelectedCategory");
 
         for (var i = 0; i < categories.length; i++)
         {			
             var categoryItem;
             categoryItem = document.createElement("A");
             /*make the matching letters bold:*/
-            categoryItem.setAttribute("class", "row text-dark");
-            categoryItem.setAttribute("href", "bunBunBun.php");
-
+            categoryItem.setAttribute("class", "row text-dark btn");
+            categoryItem.setAttribute("id", categories[i]['ID']);
             //to do: set categoryItemHref
 
             var categoryText = document.createElement("H5");
+            
             if(currentSelectedCategoryID == categories[i]['ID'])
                 categoryText.setAttribute("class", "font-weight-bold")
+
             categoryText.innerHTML = categories[i]['name'];
             categoryItem.appendChild(categoryText);
 
@@ -480,6 +509,20 @@
             lineBetween.setAttribute("style", "border-top: 1px solid rgba(0,0,0,.3); width:70%;");
             lineBetween.setAttribute("class", "border-top: 1px solid rgba(0,0,0,.3); row mt-1");
             
+            categoryItem.onclick = function()
+            {
+                for(var j=0;j<categories.length;j++)
+                    if(categories[j]['ID'] == this.id)
+                    {
+                        var inputForm = document.getElementById("custom-input");
+                        inputForm.value = categories[j]['name'];
+                        showFilteredProducts(inputForm, productsArray, categories);
+                        document.cookie="currentSelectedCategory=" + this.id;
+                        showCategories(categories);
+                    }
+
+            }
+
             categoriesListContainer.appendChild(categoryItem);
             categoriesListContainer.appendChild(lineBetween);
         }
