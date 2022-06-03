@@ -278,7 +278,8 @@
             
             productImage = document.createElement("IMG");
             productImage.setAttribute("class", "col-4 m-0 p-0 product-img");
-            productImage.setAttribute("src", "img/Shawarma sandwich F.G..png");
+            // productImage.setAttribute("src", "img/Shawarma sandwich F.G..png");
+            productImage.setAttribute("src", productsToShow[i]['imageURL']);
             productItem.appendChild(productImage);
 
             textSection = document.createElement("DIV");
