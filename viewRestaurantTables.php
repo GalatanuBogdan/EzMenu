@@ -19,7 +19,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="nofollow" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/viewRestaurantTables.css" />
 
 </head>
 
@@ -113,34 +113,55 @@
                 <div class= "d-flex row mt-5" id="tables-list">
                         
                     <div class="d-flex-inline col-md-5 p-0 m-0 border" id="tableItem">
-
-                        <div class="row p-0 m-0">
-                            <h2 class="col-md-4 m-0 p-0">Table #1 </h2>
-                            <h2 class="col-md-4 m-0 p-0">Managed by: </h2>
-                        </div>
-                        <!-- <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\viewOrderIcon.png" alt="">
-                        <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\requestWaiterIcon.png" alt="">
-                        <img class="col-4 btn text-center request-restaurant-service-btn rounded-lg" src="img\firstImageFromWebsite.png" alt=""> -->
-                        <div class="row p-0 m-0">
-                            <div class="col-md-8 m-0 p-0">
+                        <br>
+                        <div class="d-flex row p-0 m-0 justify-content-between">
+                            <h3 class="col-md-3 m-0 pl-2">Table #1 </h3>
+                            <h4 class="col-md-3 m-0 pl-2">Managed by: </h4>
+                            
+                            <div class="col-sm-6 m-0 p-0">
                                 <div class="row m-0 p-0">
-                                    <div class="col-md-4 m-0 p-0">
-                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0" src="img\viewOrderIcon.png" alt="">
-                                        A Waiter is requested
+                                    <div class="d-inline-flex col-md-8 p-0 m-0 overflow-hidden" for="whatev2" style="border-radius: 10px 0px 0px 10px; !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);">
+                                        <button class="btn btn-primary bg-danger m-1 p-0 overflow-hidden" style="border-radius:10px; border-color:#FDFDFD; overflow:hidden">Andrei<span style="font-weight:bold overflow:hidden"> -</span></button>                                            
+                                        <button class="btn btn-primary bg-danger m-1 p-0 overflow-hidden" style="border-radius:10px; border-color:#FDFDFD overflow:hidden">Maria<span style="font-weight:bold overflow:hidden"> -</span></button>                                            
                                     </div>
-                                    <div class="col-md-4 m-0 p-0">
-                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0" src="img\requestWaiterIcon.png" alt="">
-                                        The receipt is requested
+                                    <button class="col-md-4 btn btn-primary m-0 p-0 ml-auto" style="border-radius: 0px 10px 10px 0px; background-color:#F9B356; border-color:#F9B356">
+                                        Add
+                                        <span style="font-weight:bold;"> +</span>
+                                    </button>                                                                
+                            </div>
+
+                        </div>
+                        <div class="d-flex row p-0 m-0">
+                            <div class="d-flex col-md-8 m-0 p-0">
+                                    <div class="col-md-4 m-2 p-0">
+                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0 table-request-img" src="img\viewOrderIcon.png" alt="">
+                                        <h6 class="row table-request-text m-0 p-0 text-center">A Waiter is requested</h6>
                                     </div>
-                                    <div class="col-md-4 m-0 p-0">
-                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0" src="img\requestWaiterIcon.png" alt="">
-                                        An order is pending
+                                    <div class="col-md-4 m-2 p-0">
+                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0 table-request-img" src="img\requestWaiterIcon.png" alt="">
+                                        <h6 class="row table-request-text m-0 p-0 text-center">The receipt is requested</h6>
+                                    </div>
+                                    <div class="col-md-4 m-2 p-0">
+                                        <img class="row col-sm-12 btn text-center rounded-lg m-0 p-0 table-request-img" src="img\requestWaiterIcon.png" alt="">
+                                        <h6 class="row table-request-text m-0 p-0 text-center">An order is pending</h6>
                                     </div>     
+                            </div> 
+                            <div class="col-md-4 m-0 pl-3">
+                                <h4 class="d-flex flex-row row m-0 pl-2">Categories: </h4>
+                                <div class="d-flex flex-row m-0 p-0">
+                                    <div class="d-inline-flex col-md-8 p-0 m-0 overflow-hidden" for="whatev2" style="border-radius: 10px 0px 0px 10px; !important; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);">
+                                        <button class="btn btn-primary bg-danger m-1 p-0 overflow-hidden" style="border-radius:10px; border-color:#FDFDFD; overflow:hidden">Andrei<span style="font-weight:bold overflow:hidden"> -</span></button>                                            
+                                        <button class="btn btn-primary bg-danger m-1 p-0 overflow-hidden" style="border-radius:10px; border-color:#FDFDFD overflow:hidden">Maria<span style="font-weight:bold overflow:hidden"> -</span></button>                                            
+                                    </div>
+                                    <button class="col-md-4 btn btn-primary m-0 p-0 ml-auto" style="border-radius: 0px 10px 10px 0px; background-color:#F9B356; border-color:#F9B356">
+                                        Add
+                                        <span style="font-weight:bold;"> +</span>
+                                    </button>                                                                
                                 </div>
-                            </div>   
+                            </div>
                         </div>
                     </div>
-                
+
                 </div>
             </div>
 
